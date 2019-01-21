@@ -7,7 +7,7 @@ To test sequence for math.progression criteria
 
   Onto original idea of A.P.Kiselev:) 
 
-  Best regards, J/Z/Katsman (c) January.2019   
+   
   email:call89269081096@gmail.com
  
 
@@ -22,4 +22,6 @@ To test sequence for math.progression criteria
  
  Use instruction:
  ./test_compile6  0, 1, 4, 16, 32
+ 
+ Best regards, J/Z/Katsman (c) January.2019 
  
