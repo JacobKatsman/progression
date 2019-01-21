@@ -44,7 +44,8 @@
 
 ;;check criteria of progressions
 (defun checkCriteria (arrList)
-  (let ((arrList (sort arrList  #'<)))
+  (if (not (eq nil arrList))
+   (let ((arrList (sort arrList  #'<)))
     (cond ((= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
 	       ( format t "~% This is (A)rithmetic progression ~%" ))
 		   
@@ -55,6 +56,8 @@
 		  ( format t "~% This is (G)eometric  progression ~%" ))
           ( t ( format t "(U)nknow sequence ~%" ))
 	)
+   )
+   (format t "null sequence (symbol not found)")
   )
 )
 
@@ -161,8 +164,20 @@
   collect (parse-float (remove #\Space item)  :junk-allowed t)
 ))
 
+;;(defun mainProcedure ()
+;;  (format t "~a"	(remove 0.0
+;;    (remove nil 
+;;    (resultRemove 
+;;    (remove nil 
+;;    (spaceRemove 
+;;    (flat 
+;;    (listExcludeType 
+;;    (cdr sb-ext:*posix-argv*)))))))))
+;;   )
+
 (defun mainProcedure ()
     (checkCriteria 
+	  (remove 0.0
     (remove nil 
     (resultRemove 
     (remove nil 
@@ -170,6 +185,7 @@
     (flat 
     (listExcludeType 
     (cdr sb-ext:*posix-argv*))))))))
+	)
 )
 
 (defun save-core (core-fn)
