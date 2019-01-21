@@ -41,10 +41,11 @@
     (abs (/ (-  (*  (nth( - (calcLength arrList) 1 ) arrList)  (denominatorProg arrList)) (nth 0 arrList)) 
        (- 1  (denominatorProg arrList))
     )))
-
+	
+ 
 ;;check criteria of progressions
 (defun checkCriteria (arrList)
-  (if (not (eq nil arrList))
+  (if ( and (not (eq nil arrList))  (= (length (remove-duplicates arrList)) (calcLength arrList))) 
    (let ((arrList (sort arrList  #'<)))
     (cond ((= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
 	       ( format t "~% This is (A)rithmetic progression ~%" ))
@@ -57,7 +58,7 @@
           ( t ( format t "(U)nknow sequence ~%" ))
 	)
    )
-   (format t "null sequence (symbol not found)")
+   (format t "It's null sequence (symbol not found) or we are find more one duplicate values")
   )
 )
 
