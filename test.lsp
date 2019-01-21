@@ -45,13 +45,13 @@
 ;;check criteria of progressions
 (defun checkCriteria (arrList)
   (let ((arrList (sort arrList  #'<)))
-    (cond ((= (calcSumm (cdr arrList)) (ArfProgCalcSumm (cdr arrList)))                   
+    (cond ((= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
 	       ( format t "~% This is (A)rithmetic progression ~%" ))
 		   
           ((or(< (nth 1 arrList) 2 ) (< (length arrList)  4))                             
 		  ( format t "~% (U)nknow sequence (very short seq)) ~%" ))
 		  
-	      ((= (calcSumm (cdr arrList)) (GeomProgCalcSumm (cdr arrList)))                  
+	      ((= (calcSumm arrList) (GeomProgCalcSumm arrList))                  
 		  ( format t "~% This is (G)eometric  progression ~%" ))
           ( t ( format t "(U)nknow sequence ~%" ))
 	)
@@ -106,4 +106,3 @@
 (defun save-core (core-fn)
 	(sb-ext:save-lisp-and-die core-fn :toplevel #'mainProcedure :executable t)    
 )
-
