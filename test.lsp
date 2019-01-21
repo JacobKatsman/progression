@@ -95,12 +95,12 @@
 (defun mainProcedure ()
     (checkCriteria 
     (remove nil 
-	(resultRemove 
-	(remove nil 
-	(spaceRemove 
-        (flat 
-	(listExcludeType 
-	(cdr sb-ext:*posix-argv*))))))))
+    (resultRemove 
+    (remove nil 
+    (spaceRemove 
+    (flat 
+    (listExcludeType 
+    (cdr sb-ext:*posix-argv*))))))))
 )
 
 (defun save-core (core-fn)
