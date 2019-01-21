@@ -21,5 +21,5 @@ To test sequence for math.progression criteria
 
  
  Use instruction:
- ./test_compile6  0, 1, 4, 16
+ ./test_compile6  0, 1, 4, 16, 32
  
