@@ -12,7 +12,7 @@
 ;;--------------------------------------------------------------------------------- 
 ;; Build instruction:
 ;; 1) sbcl --load=quicklisp.lisp
-;; 2) (require :sb-posix)
+;; 2) (require :sb-posix)(require :sb-posix)
 ;; 3) (load "test.lsp")
 ;; 4) (save-core #p"test_compile6") 
 ;;--------------------------------------------------------------------------------- 
@@ -33,35 +33,59 @@
 ;; Calc element's summ
 (defun calcSumm(arrList)(reduce #'+ arrList))
 ;; Calc progression's denominator
-(defun denominatorProg(arrList) ( / (nth 1 arrList) (nth 0 arrList)))
+;; 
+(defun changeSignSeries (arrList)
+  (list (reduce #'max arrList) (reduce #'min arrList))
+)   
+
+(defun quicksort (arrList) (if (null arrList) nil (let* ((x (car arrList)) (r (cdr arrList)) (fn (lambda (a) (< a x)))) 
+(append (quicksort (remove-if-not fn r)) (list x) (quicksort (remove-if fn r)))))) 
+
+;;(format t "[ ~S ~S ]" arrList (changeSignSeries arrList))
+;; first negative value /  first  positive value 
+(defun denominatorProg(arrList) 
+(if ( and (< (nth 1 (changeSignSeries arrList)) 0) (> (nth 1 (changeSignSeries arrList)) 0))
+( / (reduce #'min (changeSignSeries arrList)) (reduce #'max (changeSignSeries arrList)))
+( / (nth 1 arrList) (nth 0 arrList))))
+
 ;; Calc Ariphmetic summ
 (defun ArfProgCalcSumm(arrList)  ( / ( * (+ (nth 0 arrList) (nth( - (calcLength arrList) 1 ) arrList)) (calcLength arrList)) 2))
 ;; Calc Geometric summ
+
 (defun GeomProgCalcSumm(arrList)
-    (abs (/ (-  (*  (nth( - (calcLength arrList) 1 ) arrList)  (denominatorProg arrList)) (nth 0 arrList)) 
-       (- 1  (denominatorProg arrList))
-    )))
-	
- 
+(progn
+;; if first item > last item   Descrising seq.
+;; if first item < last item   Inscrising seq.	
+(format t "~% arrlist ~s  deno: ~a  nth ~a  nth ~a ~%" arrList ( denominatorProg arrList) (nth  0 arrList)  (* (nth  (- (calcLength arrList) 1) arrList) (denominatorProg arrList)))
+(if (> ( denominatorProg arrList) 0)
+	 (/ (- (nth  0 arrList)  (* (nth  (- (calcLength arrList) 1) arrList) (denominatorProg arrList)))
+       (-   (denominatorProg arrList) 1)
+    ) 
+      (/ (- (* (nth  (- (calcLength arrList) 1) arrList) (denominatorProg arrList)) (nth  0 arrList))
+       (-  1 (denominatorProg  arrList))
+    ) 	
+)))
+
 ;;check criteria of progressions
 (defun checkCriteria (arrList)
   (if ( and (not (eq nil arrList))  (= (length (remove-duplicates arrList)) (calcLength arrList))) 
-   (let ((arrList (sort arrList  #'<)))
-    (cond ((= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
+   (let ((arrListSort (quicksort arrList)))
+    (cond ((= (calcSumm arrListSort) (ArfProgCalcSumm arrListSort))                   
 	       ( format t "~% This is (A)rithmetic progression ~%" ))
 		   
-          ((or(< (nth 1 arrList) 2 ) (< (length arrList)  4))                             
-		  ( format t "~% (U)nknow sequence (very short seq)) ~%" ))
+           ((< (length arrList)  4)                             
+		   (format t "~% (U)nknow sequence (very short seq)) ~%" ))
 		  
-	      ((= (calcSumm arrList) (GeomProgCalcSumm arrList))                  
-		  ( format t "~% This is (G)eometric  progression ~%" ))
-          ( t ( format t "(U)nknow sequence ~%" ))
+	       ((= (abs (calcSumm arrList)) (abs (GeomProgCalcSumm arrList)))                  
+		   ( format t "~% This is (G)eometric  progression ~%" ))
+		  
+           ( t ( format t "(U)nknow sequence [~a] ~a ~a  || ~a  ~%" arrList (calcSumm arrList) (GeomProgCalcSumm arrList) (denominatorProg arrList) ))
 	)
-   )
+    )
    (format t "It's null sequence (symbol not found) or we are find more one duplicate values")
-  )
-)
-
+   )
+)   
+ 
 ;;https://common-lisp.net/project/bese/docs/arnesi/html/api/function_005FIT.BESE.ARNESI_003A_003APARSE-FLOAT.html 
 (defun radix-values (radix)
   (assert (<= 2 radix 35)
@@ -165,28 +189,28 @@
   collect (parse-float (remove #\Space item)  :junk-allowed t)
 ))
 
-;;(defun mainProcedure ()
+;; (defun mainProcedure ()
 ;;  (format t "~a"	(remove 0.0
-;;    (remove nil 
-;;    (resultRemove 
-;;    (remove nil 
-;;    (spaceRemove 
-;;    (flat 
-;;    (listExcludeType 
-;;    (cdr sb-ext:*posix-argv*)))))))))
-;;   )
+;;     (remove nil 
+;;     (resultRemove 
+;;     (remove nil 
+;;     (spaceRemove 
+;;     (flat 
+;;     (listExcludeType 
+;;     (cdr sb-ext:*posix-argv*)))))))))
+;;    )
 
 (defun mainProcedure ()
-    (checkCriteria 
-	  (remove 0.0
-    (remove nil 
-    (resultRemove 
-    (remove nil 
-    (spaceRemove 
-    (flat 
-    (listExcludeType 
-    (cdr sb-ext:*posix-argv*))))))))
-	)
+     (checkCriteria 
+	 (remove 0.0
+     (remove nil 
+     (resultRemove 
+     (remove nil 
+     (spaceRemove 
+     (flat 
+     (listExcludeType 
+     (cdr sb-ext:*posix-argv*))))))))
+ 	)
 )
 
 (defun save-core (core-fn)
