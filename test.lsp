@@ -46,43 +46,50 @@
 (defun denominatorProg(arrList) 
 (if ( and (< (nth 1 (changeSignSeries arrList)) 0) (> (nth 1 (changeSignSeries arrList)) 0))
 ( / (reduce #'min (changeSignSeries arrList)) (reduce #'max (changeSignSeries arrList)))
-( / (nth 1 arrList) (nth 0 arrList))))
+( / (nth 2 arrList) (nth 1 arrList))))
 
 ;; Calc Ariphmetic summ
-(defun ArfProgCalcSumm(arrList)  ( / ( * (+ (nth 0 arrList) (nth( - (calcLength arrList) 1 ) arrList)) (calcLength arrList)) 2))
+(defun ArfProgCalcSumm(arrList)  ( / ( * (+ (nth 0 arrList) (nth  ( - (calcLength arrList) 1 ) arrList)) (calcLength arrList)) 2))
 ;; Calc Geometric summ
 
 (defun GeomProgCalcSumm(arrList)
-(progn
+;;(progn
 ;; if first item > last item   Descrising seq.
 ;; if first item < last item   Inscrising seq.	
-(format t "~% arrlist ~s  deno: ~a  nth ~a  nth ~a ~%" arrList ( denominatorProg arrList) (nth  0 arrList)  (* (nth  (- (calcLength arrList) 1) arrList) (denominatorProg arrList)))
 (if (> ( denominatorProg arrList) 0)
-	 (/ (- (nth  0 arrList)  (* (nth  (- (calcLength arrList) 1) arrList) (denominatorProg arrList)))
+	(/ (- (nth  0 arrList)  (* (nth  (- (calcLength arrList) 1) arrList) (denominatorProg arrList)))
        (-   (denominatorProg arrList) 1)
     ) 
-      (/ (- (* (nth  (- (calcLength arrList) 1) arrList) (denominatorProg arrList)) (nth  0 arrList))
+    (/ (- (* (nth  (- (calcLength arrList) 1) arrList) (denominatorProg arrList)) (nth  0 arrList))
        (-  1 (denominatorProg  arrList))
     ) 	
-)))
+))
+
 
 ;;check criteria of progressions
 (defun checkCriteria (arrList)
-  (if ( and (not (eq nil arrList))  (= (length (remove-duplicates arrList)) (calcLength arrList))) 
+  (if (and (not (eq nil arrList))) 
    (let ((arrListSort (quicksort arrList)))
-    (cond ((= (calcSumm arrListSort) (ArfProgCalcSumm arrListSort))                   
-	       ( format t "~% This is (A)rithmetic progression ~%" ))
+    (cond  
+	   ((and (and( = (calcSumm arrList) 0) ( = (ArfProgCalcSumm arrList) 0))  (= (- (abs (nth 2 arrList)) (abs (nth 1 arrList))) 0))
+           (format t "~%May be this seq. is (G)eometric progression with divergense series ~%" ))
+			
+	   ((= (nth 0 arrListSort) 0) 
+	   (format t "~% This is (N)ogeometric progression because i(0) == [0] ~%" ))
 		   
-           ((< (length arrList)  4)                             
-		   (format t "~% (U)nknow sequence (very short seq)) ~%" ))
+           ((< (length arrList)  5)                             
+           (format t "~% (U)nknow sequence (very short seq)) ~%" ))
+		   
+           ((= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
+	   (format t "~% This is (A)rithmetic progression ~a ~a ~a ~a ~%" (calcSumm arrList) (ArfProgCalcSumm arrList) (nth 2 arrList) (nth 1 arrList)))
 		  
-	       ((= (abs (calcSumm arrList)) (abs (GeomProgCalcSumm arrList)))                  
-		   ( format t "~% This is (G)eometric  progression ~%" ))
+	    ((= (abs (calcSumm arrList)) (abs (GeomProgCalcSumm arrList)))                  
+            (format t "~% This is (G)eometric  progression ~a ~a ~%" (calcSumm arrList) (GeomProgCalcSumm arrList)))
 		  
            ( t ( format t "(U)nknow sequence [~a] ~a ~a  || ~a  ~%" arrList (calcSumm arrList) (GeomProgCalcSumm arrList) (denominatorProg arrList) ))
 	)
     )
-   (format t "It's null sequence (symbol not found) or we are find more one duplicate values")
+   (format t "It's null sequence (symbol not found)")
    )
 )   
  
@@ -162,55 +169,42 @@
         until (null finish)))
 
 ;;Main loop for input-array
-(defun listExcludeType (arrList)
+(defun splitType (arrList)
 (loop
   for item in arrList
   collect (commaSplit item) 
 ))
 	 
 ;;Convert nested-list to plain-list  
-(defun flat (arrList &optional acc) 
+(defun convertToPlainList (arrList &optional acc) 
   (cond ((null arrList) acc)
         ((atom arrList) (cons arrList acc))
-        ((flat (car arrList) (flat (cdr arrList) acc)))))
+        ((convertToPlainList (car arrList) (convertToPlainList (cdr arrList) acc)))))
 
 ;;To remove not-alphabetic data
-(defun spaceRemove (arrList)
+(defun removeSpace (arrList)
 (loop
   for item in arrList
   collect (typecase item (checkEmptyString item) (t nil))  
 ))     
 
 ;;Convert string value to integer
-(defun resultRemove (arrList)
+(defun convertFloat (arrList)
 (loop
   for item in arrList
-  ;; work in Real val.
+  ;; Real value
   collect (parse-float (remove #\Space item)  :junk-allowed t)
 ))
 
-;; (defun mainProcedure ()
-;;  (format t "~a"	(remove 0.0
-;;     (remove nil 
-;;     (resultRemove 
-;;     (remove nil 
-;;     (spaceRemove 
-;;     (flat 
-;;     (listExcludeType 
-;;     (cdr sb-ext:*posix-argv*)))))))))
-;;    )
-
 (defun mainProcedure ()
      (checkCriteria 
-	 (remove 0.0
      (remove nil 
-     (resultRemove 
+     (convertFloat
      (remove nil 
-     (spaceRemove 
-     (flat 
-     (listExcludeType 
+     (removeSpace
+     (convertToPlainList 
+     (splitType 
      (cdr sb-ext:*posix-argv*))))))))
- 	)
 )
 
 (defun save-core (core-fn)
