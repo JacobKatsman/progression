@@ -1,6 +1,6 @@
 ;;--------------------------------------------------------------------------------- 
 ;; This program for to finding progression criteria  
-;; Mininal size sequences is equal 4 elements.
+;; Minimal size sequences is equal 4 elements.
 ;;
 ;; Onto original idea of A.P.Kiselev 
 ;;
