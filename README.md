@@ -49,6 +49,13 @@ This is (A)rithmetic progression
 $ ./test_compile6 2,6,18,54
 
  arrlist (2.0 6.0 18.0 54.0)  deno: 3.0  nth 2.0  nth 162.0
+ 
+$ ./test_compile6 1,-1,1,-1,1,-1,1
+This is (G)eometric  progression 1.0 -1.0
+
+
+$ ./test_compile6 1,-1,1,-1,1,-1,1,-1
+May be this seq. is (G)eometric progression with divergense series 
 
  This is (G)eometric  progression
  
