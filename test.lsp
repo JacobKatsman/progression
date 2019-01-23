@@ -1,6 +1,6 @@
 ;;--------------------------------------------------------------------------------- 
 ;; This program for to finding progression criteria  
-;; Minimal size sequences is equal 4 elements.
+;; Calculation begin from SECOND element. Miminal size sequences is equal 4 elements.
 ;;
 ;; Onto original idea of A.P.Kiselev 
 ;;
@@ -80,7 +80,7 @@
 			(format t "~% This is (N)ogeometric progression because i(0) == [0]"))
 			)
 		   
-           ((< (length arrList)  4)                             
+           ((< (length arrList)  3)                             
 		   (format t "~% (U)nknow sequence (very short seq)) ~%"))
 		   
 		   ((= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
