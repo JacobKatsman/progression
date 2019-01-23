@@ -76,8 +76,8 @@
 			
 		   ((= (nth 0 arrListSort) 0) 
 			(if (= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
-	        (format t "~% This is (A)rithmetic progression ~a ~a ~a ~a ~%" (calcSumm arrList) (ArfProgCalcSumm arrList) (nth 2 arrList) (nth 1 arrList)))
-			(format t "~% This is (N)ogeometric progression because i(0) == [0]")
+	        (format t "~% This is (A)rithmetic progression ~a ~a ~a ~a ~%" (calcSumm arrList) (ArfProgCalcSumm arrList) (nth 2 arrList) (nth 1 arrList))
+			(format t "~% This is (N)ogeometric progression because i(0) == [0]"))
 			)
 		   
            ((< (length arrList)  5)                             
