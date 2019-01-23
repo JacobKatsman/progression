@@ -71,20 +71,23 @@
   (if (and (not (eq nil arrList))) 
    (let ((arrListSort (quicksort arrList)))
     (cond  
-	   ((and (and( = (calcSumm arrList) 0) ( = (ArfProgCalcSumm arrList) 0))  (= (- (abs (nth 2 arrList)) (abs (nth 1 arrList))) 0))
-           (format t "~%May be this seq. is (G)eometric progression with divergense series ~%" ))
+	       ((and (and( = (calcSumm arrList) 0) ( = (ArfProgCalcSumm arrList) 0))  (= (- (abs (nth 2 arrList)) (abs (nth 1 arrList))) 0))
+		    (format t "~%May be this seq. is (G)eometric progression with divergense series ~%" ))
 			
-	   ((= (nth 0 arrListSort) 0) 
-	   (format t "~% This is (N)ogeometric progression because i(0) == [0] ~%" ))
+		   ((= (nth 0 arrListSort) 0) 
+			(if (= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
+	        (format t "~% This is (A)rithmetic progression ~a ~a ~a ~a ~%" (calcSumm arrList) (ArfProgCalcSumm arrList) (nth 2 arrList) (nth 1 arrList)))
+			(format t "~% This is (N)ogeometric progression because i(0) == [0]")
+			)
 		   
            ((< (length arrList)  5)                             
-           (format t "~% (U)nknow sequence (very short seq)) ~%" ))
+		   (format t "~% (U)nknow sequence (very short seq)) ~%" ))
 		   
-           ((= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
-	   (format t "~% This is (A)rithmetic progression ~a ~a ~a ~a ~%" (calcSumm arrList) (ArfProgCalcSumm arrList) (nth 2 arrList) (nth 1 arrList)))
+		   ((= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
+	       (format t "~% This is (A)rithmetic progression ~a ~a ~a ~a ~%" (calcSumm arrList) (ArfProgCalcSumm arrList) (nth 2 arrList) (nth 1 arrList)))
 		  
-	    ((= (abs (calcSumm arrList)) (abs (GeomProgCalcSumm arrList)))                  
-            (format t "~% This is (G)eometric  progression ~a ~a ~%" (calcSumm arrList) (GeomProgCalcSumm arrList)))
+	       ((= (abs (calcSumm arrList)) (abs (GeomProgCalcSumm arrList)))                  
+		   (format t "~% This is (G)eometric  progression ~a ~a ~%" (calcSumm arrList) (GeomProgCalcSumm arrList)))
 		  
            ( t ( format t "(U)nknow sequence [~a] ~a ~a  || ~a  ~%" arrList (calcSumm arrList) (GeomProgCalcSumm arrList) (denominatorProg arrList) ))
 	)
