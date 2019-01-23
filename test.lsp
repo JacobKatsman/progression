@@ -12,7 +12,7 @@
 ;;--------------------------------------------------------------------------------- 
 ;; Build instruction:
 ;; 1) sbcl --load=quicklisp.lisp
-;; 2) (require :sb-posix)(require :sb-posix)
+;; 2) (require :sb-posix)
 ;; 3) (load "test.lsp")
 ;; 4) (save-core #p"test_compile6") 
 ;;--------------------------------------------------------------------------------- 
@@ -80,7 +80,7 @@
 			(format t "~% This is (N)ogeometric progression because i(0) == [0]"))
 			)
 		   
-           ((< (length arrList)  5)                             
+           ((< (length arrList)  4)                             
 		   (format t "~% (U)nknow sequence (very short seq)) ~%" ))
 		   
 		   ((= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
