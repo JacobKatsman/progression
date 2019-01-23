@@ -76,18 +76,18 @@
 			
 		   ((= (nth 0 arrListSort) 0) 
 			(if (= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
-	        (format t "~% This is (A)rithmetic progression ~a ~a ~a ~a ~%" (calcSumm arrList) (ArfProgCalcSumm arrList) (nth 2 arrList) (nth 1 arrList))
+	        (format t "~% This is (A)rithmetic progression ~%")
 			(format t "~% This is (N)ogeometric progression because i(0) == [0]"))
 			)
 		   
            ((< (length arrList)  4)                             
-		   (format t "~% (U)nknow sequence (very short seq)) ~%" ))
+		   (format t "~% (U)nknow sequence (very short seq)) ~%"))
 		   
 		   ((= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
-	       (format t "~% This is (A)rithmetic progression ~a ~a ~a ~a ~%" (calcSumm arrList) (ArfProgCalcSumm arrList) (nth 2 arrList) (nth 1 arrList)))
+	       (format t "~% This is (A)rithmetic progression ~%"))
 		  
 	       ((= (abs (calcSumm arrList)) (abs (GeomProgCalcSumm arrList)))                  
-		   (format t "~% This is (G)eometric  progression ~a ~a ~%" (calcSumm arrList) (GeomProgCalcSumm arrList)))
+		   (format t "~% This is (G)eometric  progression ~%"))
 		  
            ( t ( format t "(U)nknow sequence [~a] ~a ~a  || ~a  ~%" arrList (calcSumm arrList) (GeomProgCalcSumm arrList) (denominatorProg arrList) ))
 	)
@@ -192,17 +192,17 @@
 ))     
 
 ;;Convert string value to integer
-(defun convertFloat (arrList)
+(defun convertToNumber (arrList)
 (loop
   for item in arrList
-  ;; Real value
-  collect (parse-float (remove #\Space item)  :junk-allowed t)
+  ;; Convert to rational
+  collect  (with-input-from-string (in item) (read in))
 ))
 
 (defun mainProcedure ()
      (checkCriteria 
      (remove nil 
-     (convertFloat
+     (convertToNumber
      (remove nil 
      (removeSpace
      (convertToPlainList 
@@ -213,3 +213,4 @@
 (defun save-core (core-fn)
 	(sb-ext:save-lisp-and-die core-fn :toplevel #'mainProcedure :executable t)    
 )
+
