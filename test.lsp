@@ -1,6 +1,6 @@
 ;;--------------------------------------------------------------------------------- 
 ;; This program for to finding progression criteria  
-;; Calculation begin from SECOND element. Miminal size sequences is equal 4 elements.
+;; Miminal size sequences is equal 3 elements.
 ;;
 ;; Onto original idea of A.P.Kiselev 
 ;;
