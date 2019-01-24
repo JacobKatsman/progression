@@ -1,6 +1,6 @@
 ;;--------------------------------------------------------------------------------- 
 ;; This program for to finding progression criteria  
-;; Miminal size sequences is equal 3 elements.
+;; Calculation begin from SECOND element. Miminal size sequences is equal 4 elements.
 ;;
 ;; Onto original idea of A.P.Kiselev 
 ;;
@@ -22,12 +22,30 @@
 ;; ./test_compile6  0, 1, 4, 16
 ;;--------------------------------------------------------------------------------- 
  
+(defvar *hash-print* '(
+	:print-may-be-geom-seq         " May be this seq. is (G)eometric progression with divergense series"
+        :print-none-geom-prog-seq      " This is (N)ogeometric progression because i(0) == [0]"
+        :print-arif-prog-seq           " This is (A)rithmetic progression"
+        :print-vey-short-seq           " (U)nknow sequence (very short seq))"
+        :print-unknow-seq              " (U)nknow sequence)"
+        :print-geom-prog-seq           " This is (G)eometric  progression"
+        :print-i-dont-know-seq         " I don's know what is this (not defined)"
+	:print-is-nil-seq              " It's nil sequence (seq. not found)"
+)) 
+ 
 (defun  typeEmpty (a)
   (if (not (string-equal a "")) (return-from typeEmpty 1) (return-from typeEmpty nil)))
 
 (deftype  checkEmptyString()
   `(satisfies typeEmpty))
 
+;; Sort List for Arf.prog		
+(defun quicksort (arrList) 
+(if (null arrList) nil 
+ (let* ((x (car arrList)) (r (cdr arrList)) (fn (lambda (a) (< a x)))) 
+(append (quicksort (remove-if-not fn r)) (list x) (quicksort (remove-if fn r)))))
+)  
+  
 ;; Calc list's length
 (defun calcLength(arrList)(length arrList))
 ;; Calc element's summ
@@ -38,131 +56,38 @@
   (list (reduce #'max arrList) (reduce #'min arrList))
 )   
 
-(defun quicksort (arrList) (if (null arrList) nil (let* ((x (car arrList)) (r (cdr arrList)) (fn (lambda (a) (< a x)))) 
-(append (quicksort (remove-if-not fn r)) (list x) (quicksort (remove-if fn r)))))) 
-
 ;;(format t "[ ~S ~S ]" arrList (changeSignSeries arrList))
 ;; first negative value /  first  positive value 
-(defun denominatorProg(arrList) 
+(defun denominatorp (arrList) 
 (if ( and (< (nth 1 (changeSignSeries arrList)) 0) (> (nth 1 (changeSignSeries arrList)) 0))
-( / (reduce #'min (changeSignSeries arrList)) (reduce #'max (changeSignSeries arrList)))
-( / (nth 2 arrList) (nth 1 arrList))))
+(handler-case ( / (reduce #'min (changeSignSeries arrList)) (reduce #'max (changeSignSeries arrList)))  
+(error ()(progn (format t " division 0 (1)")(quit))))
+(handler-case ( / (nth 2 arrList) (nth 1 arrList))  
+(error ()(progn(format t " division 0 (2)")(quit))))
+))
 
 ;; Calc Ariphmetic summ
 (defun ArfProgCalcSumm(arrList)  ( / ( * (+ (nth 0 arrList) (nth  ( - (calcLength arrList) 1 ) arrList)) (calcLength arrList)) 2))
-;; Calc Geometric summ
 
+(defun more_one(arrList)
+(handler-case (/ (- (* (nth  (- (calcLength arrList) 1) arrList)  (denominatorp arrList)) (nth  0 arrList)) (- (denominatorp  arrList)  1))  
+(error ()(progn(format t " division 0 (3)")(quit))))
+)
+
+(defun less_one(arrList)
+(handler-case (/ (- (nth  0 arrList)  (* (nth  (- (calcLength arrList) 1) arrList) (denominatorp arrList))) ( - 1  (denominatorp arrList))) 
+(error ()(progn(format t " division 0 (4)")(quit))))
+)	   
+
+;; Calc Geometric summ
 (defun GeomProgCalcSumm(arrList)
-;;(progn
+
 ;; if first item > last item   Descrising seq.
 ;; if first item < last item   Inscrising seq.	
-(if (> ( denominatorProg arrList) 0)
-	(/ (- (nth  0 arrList)  (* (nth  (- (calcLength arrList) 1) arrList) (denominatorProg arrList)))
-       (-   (denominatorProg arrList) 1)
-    ) 
-    (/ (- (* (nth  (- (calcLength arrList) 1) arrList) (denominatorProg arrList)) (nth  0 arrList))
-       (-  1 (denominatorProg  arrList))
-    ) 	
+(if (> (denominatorp arrList) 0)
+	   (more_one arrList) 
+       (less_one arrList)  
 ))
-
-
-;;check criteria of progressions
-(defun checkCriteria (arrList)
-  (if (and (not (eq nil arrList))) 
-   (let ((arrListSort (quicksort arrList)))
-    (cond  
-	       ((and (and( = (calcSumm arrList) 0) ( = (ArfProgCalcSumm arrList) 0))  (= (- (abs (nth 2 arrList)) (abs (nth 1 arrList))) 0))
-		    (format t "~%May be this seq. is (G)eometric progression with divergense series ~%" ))
-			
-		   ((= (nth 0 arrListSort) 0) 
-			(if (= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
-	        (format t "~% This is (A)rithmetic progression ~%")
-			(format t "~% This is (N)ogeometric progression because i(0) == [0]"))
-			)
-		   
-           ((< (length arrList)  3)                             
-		   (format t "~% (U)nknow sequence (very short seq)) ~%"))
-		   
-		   ((= (calcSumm arrList) (ArfProgCalcSumm arrList))                   
-	       (format t "~% This is (A)rithmetic progression ~%"))
-		  
-	       ((= (abs (calcSumm arrList)) (abs (GeomProgCalcSumm arrList)))                  
-		   (format t "~% This is (G)eometric  progression ~%"))
-		  
-           ( t ( format t "(U)nknow sequence [~a] ~a ~a  || ~a  ~%" arrList (calcSumm arrList) (GeomProgCalcSumm arrList) (denominatorProg arrList) ))
-	)
-    )
-   (format t "It's null sequence (symbol not found)")
-   )
-)   
- 
-;;https://common-lisp.net/project/bese/docs/arnesi/html/api/function_005FIT.BESE.ARNESI_003A_003APARSE-FLOAT.html 
-(defun radix-values (radix)
-  (assert (<= 2 radix 35)
-          (radix)
-          "RADIX must be between 2 and 35 (inclusive), not ~D." radix)
-  (make-array radix
-              :displaced-to "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-              :displaced-index-offset 0
-              :element-type 'character))
-			  
-
-(defun parse-float (float-string
-                    &key (start 0) (end nil) (radix 10)
-                         (junk-allowed t)
-                         (type 'single-float)
-                         (decimal-character #\.))
-  (let ((radix-array (radix-values radix))
-        (integer-part 0)
-        (mantissa 0)
-        (mantissa-size 1)
-        (sign 1))
-    (with-input-from-string (float-stream (string-upcase float-string) :start start :end end)
-      (labels ((peek () (peek-char nil float-stream nil nil nil))
-               (next () (read-char float-stream nil nil nil))
-               (sign () ;; reads the (optional) sign of the number
-                 (cond
-                   ((char= (peek) #\+) (next) (setf sign 1))
-                   ((char= (peek) #\-) (next) (setf sign -1)))
-                 (integer-part))
-               (integer-part ()
-                 (cond
-                   ((position (peek) radix-array)
-                    ;; the next char is a valid char
-                    (setf integer-part (+ (* integer-part radix)
-                                          (position (next) radix-array)))
-                    ;; again
-                    (return-from integer-part (integer-part)))
-                   ((null (peek))
-                    ;; end of string
-                    (done))
-                   ((char= decimal-character (peek))
-                    ;; the decimal seperator
-                    (next)
-                    (return-from integer-part (mantissa)))                   
-                   ;; junk
-                   (junk-allowed (done))
-                   (t (bad-string))))
-               (mantissa ()                 
-                 (cond
-                   ((position (peek) radix-array)
-                    (setf mantissa (+ (* mantissa radix)
-                                      (position (next) radix-array))
-                          mantissa-size (* mantissa-size radix))
-                    (return-from mantissa
-                      (mantissa)))
-                   ((or (null (peek)) junk-allowed)
-                    ;; end of string
-                    (done))
-                   (t (bad-string))))
-               (bad-string ()
-                 (error "Unable to parse ~S." float-string))
-               (done ()
-                 (return-from parse-float
-                   (coerce (* sign (+ integer-part (/ mantissa mantissa-size))) type))))
-        (sign)))))
-		
-		
 
 ;;Split token with: comma(,)
 (defun commaSplit (string)
@@ -172,7 +97,7 @@
         until (null finish)))
 
 ;;Main loop for input-array
-(defun splitType (arrList)
+(defun splitString (arrList)
 (loop
   for item in arrList
   collect (commaSplit item) 
@@ -184,20 +109,57 @@
         ((atom arrList) (cons arrList acc))
         ((convertToPlainList (car arrList) (convertToPlainList (cdr arrList) acc)))))
 
-;;To remove not-alphabetic data
+;;To remove not-alphabetic data element
 (defun removeSpace (arrList)
 (loop
   for item in arrList
   collect (typecase item (checkEmptyString item) (t nil))  
 ))     
 
-;;Convert string value to integer
+;;Read string value from input for anyType number
 (defun convertToNumber (arrList)
 (loop
   for item in arrList
-  ;; Convert to rational
   collect  (with-input-from-string (in item) (read in))
 ))
+
+;;print result
+(defun printResult (printList)
+(loop
+  for item in printList
+  do (format t " ~a " (getf *hash-print* item)) 
+))
+
+;;check criteria of progressions
+(defun checkCriteria (arrList)
+(let ((printList nil)) 
+  (if (and (not (eq nil arrList)))
+        (progn
+		
+		   (if ( < (length arrList) 3) 
+		    (progn
+		    (setq printList (append printList   (list ':print-vey-short-seq)))
+            (quit)
+		    )
+		   )
+		   (if ( and ( = (calcSumm arrList) (ArfProgCalcSumm arrList))                   
+		       (not (or (and( = (calcSumm arrList) 0) ( = (ArfProgCalcSumm arrList) 0))  
+		   	   (= (-  (nth 2 arrList) (nth 1 arrList)) 0))))
+		   (setq printList (append printList   (list ':print-arif-prog-seq))))
+           
+	       (if (and ( = (calcSumm arrList) (GeomProgCalcSumm arrList)) (= (/ (nth 1 arrList)(nth 0 arrList)) (/ (nth 2 arrList)(nth 1 arrList))))
+		   (setq printList (append printList   (list ':print-geom-prog-seq))))
+		  
+		   (if ( = (nth 0 (quicksort arrList)) 0) 
+		   (setq printList (append printList   (list ':print-none-geom-prog-seq))))
+		   
+		   
+		   ;; call print function 
+		   (if (not ( = (length printList) 0)) (printResult printList))
+		   (if ( = (length printList) 0) (printResult (list ':print-i-dont-know-seq)))
+		  ) 
+		 (printResult (list ':print-is-nil-seq))
+		)))
 
 (defun mainProcedure ()
      (checkCriteria 
@@ -206,11 +168,12 @@
      (remove nil 
      (removeSpace
      (convertToPlainList 
-     (splitType 
+     (splitString 
      (cdr sb-ext:*posix-argv*))))))))
 )
 
 (defun save-core (core-fn)
 	(sb-ext:save-lisp-and-die core-fn :toplevel #'mainProcedure :executable t)    
 )
+
 
