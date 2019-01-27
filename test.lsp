@@ -28,6 +28,11 @@
 
 (deftype  checkEmptyString()
   `(satisfies typeEmpty))
+  
+;; cutting
+(defun round-to (number precision &optional (what #'round))
+    (let ((div (expt 10 precision)))
+         (/ (funcall what (* number div)) div)))
 
 ;;Split token with: comma(,)
 (defun commaSplit (string)
@@ -79,73 +84,52 @@
    (= ( - (nth 1 arrItem) (nth 0 arrItem)) ( denominator_a *arrList*)) 
    (list  (nth 0 arrItem)) 
    (list 0)
-  )(list (nth 0 arrItem)) 
-  )) 
+  )(list (nth 0 arrItem)))) 
 
 (defun denom (arrList)
- (mapcon #'denomExclude arrList)
-)
+ (mapcon #'denomExclude arrList))
 
 (defun checkArf(arrList)
 (if  (= (length (remove 0 (denom arrList)))  (length (remove 0 arrList)))
   1
-  0
-))
+  0 ))
 ;;----------- 
  
 ;;------------
-;; round
-(defun roundx (number precision)
-  (let ((div (expt 10 precision)))
-    (float (/ (floor (* number div)) div))))
-
-;; cutting
-(defun round-to (number precision &optional (what #'round))
-    (let ((div (expt 10 precision)))
-         (/ (funcall what (* number div)) div)))
-
 (defun denominator_geo (arrList)
    (if ( > (length arrList) 1)
    (if( and (not( = (nth 0 arrList) 0)) (not( = (nth 1 arrList) 0)))  (/ (nth 1 arrList) (nth 0 arrList)) 0) 
-   0 )
-)
+   0 ))
 
 (defun denominator_g (arrList)
- (car (remove 0 (mapcar #'denominator_geo (mapcon #'list arrList))))
-) 
+ (car (remove 0 (mapcar #'denominator_geo (mapcon #'list arrList))))) 
 
 (defun summgeo(x y)
-(let ((denominator_g1 (round-to (denominator_g *arrList*) 6 #'truncate)))
+(let ((denominator_g1 (denominator_g *arrList*)))
  (progn
  (if (not (= x 0))
- (if (= (roundx (/  y  x) 5) (roundx denominator_g1 5)) y 0)
- 0 )
- )
-))
+ (if (< (abs (- (/  y  x)  denominator_g1)) 0.0000001 ) y 0)
+ 0 ))))
 
 (defun checkGeo(arrlist)
-(if (= (reduce #'summgeo arrList) (nth (- (length arrList) 1 ) arrList)) 
- 1
- 0
-))
+ 
+ (if (< ( abs ( - (reduce #'summgeo arrList) (nth (- (length arrList) 1 ) arrList))) 0.0000001)
+  1
+  0 ))
 
 ;;---------------
 (defun checkCriteria (arrList)
   (progn 
   (setf *arrList* arrList) 
-  
   (checkGeo *arrList*)
   (checkArf *arrList*)
-  
   (if (and  (= (checkGeo *arrList*) 0) (= (checkArf *arrList*) 0))
    (format t "(U)nknow sequence"))
   
   (if (= (checkGeo *arrList*) 1)
    (format t "(G)eometric progression ~%"))
   (if (= (checkArf *arrList*) 1)
-   (format t "(A)rfmetic progression ~%"))
-  
-  ))
+   (format t "(A)rfmetic progression ~%"))))
 ;;----------------
 
 (defun mainProcedure ()
@@ -156,10 +140,9 @@
      (removeSpace
      (convertToPlainList 
      (splitString 
-     (cdr sb-ext:*posix-argv*))))))))
-)
+     (cdr sb-ext:*posix-argv*)))))))))
 
 (defun save-core (core-fn)
-	(sb-ext:save-lisp-and-die core-fn :toplevel #'mainProcedure :executable t)    
-)
+	(sb-ext:save-lisp-and-die core-fn :toplevel #'mainProcedure :executable t))
+
 
