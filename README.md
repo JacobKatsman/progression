@@ -24,52 +24,77 @@ To test sequence for math.progression criteria
  
 $  ./test_compile6  1,0,-1,-2,-3
 (A)rfmetic progression
+
 $  ./test_compile6  -4,-3,-2,-1,0,1,2,3,4 
 (A)rfmetic progression
+
 $  ./test_compile6  3,4,5,6 
 (A)rfmetic progression
+
 $  ./test_compile6  1,2,3,4 
 (A)rfmetic progression
+
 $ ./test_compile6 0,1,4,16,32  
 (U)nknow sequence
+
 $ ./test_compile6 50,-25,12.5,-6.25,3.125
 (G)eometric progression
+
 $ ./test_compile6 -1, -2, -4, -8, -16
 (G)eometric progression
+
 $ ./test_compile6 0,1,2,4,8,16,32
 (U)nknow sequence
+
 $ ./test_compile6 1, 2, 4, 8, 16, 32 
 (G)eometric progression
+
 $ ./test_compile6 3.5, 5, 6.5, 8, 9.5 
 (A)rfmetic progression
+
 $ ./test_compile6 3, 5, 7 
 (A)rfmetic progression
+
 $ ./test_compile6 5, 11, 17, 23, 29  
 (A)rfmetic progression
+
 $ ./test_compile6 14933623, 14963653, 14993683, 15023713, 15053743, 15083773, 15113803, 15143833, 15173863, 15203893, 15233923, 15263953, 15293983  
 (A)rfmetic progression
+
 $ ./test_compile6 251, 257, 263, 269  
 (A)rfmetic progression
+
 $ ./test_compile6 9843019, 9843049, 9843079, 9843109, 9843139
 (G)eometric progression
+
 (A)rfmetic progression
+
 $ ./test_compile6 121174811, 121174841, 121174871, 121174901, 121174931, 121174961
 (G)eometric progression
+
 (A)rfmetic progression
+
 $ ./test_compile6 1,-1,-3,-5,-7  
 (A)rfmetic progression
+
 $ ./test_compile6 2,6,18,54  
 (G)eometric progression
+
 $ ./test_compile6 1,-1,1,-1,1,-1,1  
 (G)eometric progression
+
 $ ./test_compile6 1,-1,1,-1,1,-1,1,-1   
 (G)eometric progression
+
 $ ./test_compile6 1/2,1/4,1/8,1/16  
 (G)eometric progression 
+
 $./test_compile6 0.08, 0.008, 0.0008 
 (G)eometric progression
+
 $./test_compile6 1/2,1/4,1/8,1/16  
 (G)eometric progression
+
 $  ./test_compile6 234234,234234,23423423,234234,2223423,789789,897,
 (U)nknow sequence
 
